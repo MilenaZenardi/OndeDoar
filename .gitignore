@@ -34,3 +34,5 @@ build/
 
 # Ignorar o arquivo de configuração do banco de dados local
 src/main/resources/application-local.properties
+
+
