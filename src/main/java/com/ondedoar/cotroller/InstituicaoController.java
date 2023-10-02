@@ -5,10 +5,12 @@ import com.ondedoar.model.ImagemModel;
 import com.ondedoar.model.InstituicaoModel;
 import com.ondedoar.service.ImagemService;
 import com.ondedoar.service.InstituicaoService;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,49 +37,55 @@ public class InstituicaoController {
 
     @PostMapping("/create")
     public String createInstituicao(Model model, @ModelAttribute InstituicaoRecordDto instituicaoRecordDto,
+                                    BindingResult bindingResult,
                                     @RequestParam("imagens") List<MultipartFile> imagens) {
 
-        InstituicaoModel instituicaoModel = new InstituicaoModel();
+        try {
+            InstituicaoModel instituicaoModel = new InstituicaoModel();
 
-        BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
-        instituicaoService.save(instituicaoModel);
+            BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
+            instituicaoService.save(instituicaoModel);
 
-        for (MultipartFile imagem : imagens) {
-            if (!imagem.isEmpty()) {
-                try {
-                    // Defina um diretório onde você deseja salvar as imagens
-                    String diretorioDestino = System.getProperty("user.dir") + "/src/main/resources/static/uploads";
+            for (MultipartFile imagem : imagens) {
+                if (!imagem.isEmpty()) {
+                    try {
+                        // Defina um diretório onde você deseja salvar as imagens
+                        String diretorioDestino = System.getProperty("user.dir") + "/src/main/resources/static/uploads";
 
-                    // Obtenha o nome original do arquivo
-                    String nomeArquivo = imagem.getOriginalFilename();
+                        // Obtenha o nome original do arquivo
+                        String nomeArquivo = imagem.getOriginalFilename();
 
-                    // Crie o caminho completo para o arquivo no sistema de arquivos
-                    String caminhoCompleto = diretorioDestino + "/" + nomeArquivo;
+                        // Crie o caminho completo para o arquivo no sistema de arquivos
+                        String caminhoCompleto = diretorioDestino + "/" + nomeArquivo;
 
-                    // Salve o arquivo no sistema de arquivos
-                    byte[] bytes = imagem.getBytes();
-                    Path path = Paths.get(caminhoCompleto);
-                    Files.write(path, bytes);
+                        // Salve o arquivo no sistema de arquivos
+                        byte[] bytes = imagem.getBytes();
+                        Path path = Paths.get(caminhoCompleto);
+                        Files.write(path, bytes);
 
-                    // Crie uma entrada em ImagemModel
-                    ImagemModel imagemModel = new ImagemModel();
-                    imagemModel.setNomeArquivo(nomeArquivo);
-                    imagemModel.setCaminhoArquivo(caminhoCompleto);
-                    imagemModel.setInstituicao(instituicaoModel);
+                        // Crie uma entrada em ImagemModel
+                        ImagemModel imagemModel = new ImagemModel();
+                        imagemModel.setNomeArquivo(nomeArquivo);
+                        imagemModel.setCaminhoArquivo(caminhoCompleto);
+                        imagemModel.setInstituicao(instituicaoModel);
 
-                    // Salve a imagem no banco de dados
-                    imagemService.save(imagemModel);
+                        // Salve a imagem no banco de dados
+                        imagemService.save(imagemModel);
 
-                } catch (IOException e) {
-                    // Registre o erro
-                    e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
 
-                    // Retorne uma mensagem de erro para o usuário
-                    model.addAttribute("erro", "Erro ao fazer upload de uma ou mais imagens");
-                    return "instituicao/cadastro"; // Ou redirecione para uma página de erro
+                        model.addAttribute("erro", "Erro ao fazer upload de uma ou mais imagens");
+                        return "instituicao/cadastro";
+                    }
                 }
             }
+            model.addAttribute("message", "Instituição em processo de validação, aguarde aprovação!");
+        } catch (ConstraintViolationException e) {
+            model.addAttribute("erro", "CNPJ inválido. Por favor, insira um CNPJ válido.");
+            return "instituicao/cadastro";
         }
+
         return "instituicao/cadastro";
     }
 
