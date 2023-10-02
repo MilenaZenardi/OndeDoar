@@ -16,6 +16,9 @@
             <div th:if="${erro}" class="alert alert-danger">
                 <p th:text="${erro}"></p>
             </div>
+            <div th:if="${message}" class="alert alert-success" role="alert">
+                <p th:text="${message}"></p>
+            </div>
             <form th:action="@{/instituicao/create}" method="post" enctype="multipart/form-data">
                 <legend>Cadastro Instituição</legend>
                 <div class="mb-3">
