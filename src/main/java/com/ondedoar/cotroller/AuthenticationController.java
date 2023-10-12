@@ -3,6 +3,7 @@ package com.ondedoar.cotroller;
 import com.ondedoar.dto.AuthenticationDTO;
 import com.ondedoar.dto.LoginResponseDTO;
 import com.ondedoar.dto.RegisterDTO;
+import com.ondedoar.exception.ValidationUtils;
 import com.ondedoar.model.UserModel;
 import com.ondedoar.repository.UserRepository;
 import com.ondedoar.service.TokenService;
@@ -22,6 +23,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 
 @Controller
@@ -73,7 +76,13 @@ public class AuthenticationController {
 
 
     @PostMapping("/register")
-    public String registerUser(@Valid RegisterDTO registerDTO, RedirectAttributes redirectAttributes) {
+    public String registerUser(@Valid RegisterDTO registerDTO,BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessages);
+            return "redirect:/auth/register";
+        }
+
         String login = registerDTO.login();
 
         if (userService.findByLogin(login)) {
@@ -82,22 +91,11 @@ public class AuthenticationController {
             return "redirect:/auth/register"; // Redireciona para a página de registro
         }
 
-        try {
-            String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
+        String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
+        UserModel userModel = new UserModel();
+        BeanUtils.copyProperties(registerDTO, userModel);
+        userService.save(userModel, encryptedPassword);
 
-            UserModel userModel = new UserModel();
-            BeanUtils.copyProperties(registerDTO, userModel);
-            userService.save(userModel, encryptedPassword);
-        }catch (ConstraintViolationException e) {
-            // Lidere com as violações de validação aqui
-            // Por exemplo, obtenha as mensagens de erro e adicione-as ao atributo "errorMessage"
-            String errorMessage = e.getConstraintViolations().stream()
-                    .map(violation -> violation.getMessage())
-                    .findFirst()
-                    .orElse("Erro de validação desconhecido");
-            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
-            return "redirect:/auth/register"; // Redireciona para a página de registro com a mensagem de erro
-        }
 
         // Adicione uma mensagem de sucesso e redirecione para a página de login
         redirectAttributes.addFlashAttribute("successMessage", "Usuário cadastrado com sucesso!");

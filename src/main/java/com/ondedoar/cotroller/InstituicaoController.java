@@ -1,11 +1,13 @@
 package com.ondedoar.cotroller;
 
 import com.ondedoar.dto.InstituicaoRecordDto;
+import com.ondedoar.exception.ValidationUtils;
 import com.ondedoar.model.ImagemModel;
 import com.ondedoar.model.InstituicaoModel;
 import com.ondedoar.service.ImagemService;
 import com.ondedoar.service.InstituicaoService;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,48 +38,50 @@ public class InstituicaoController {
     }
 
     @PostMapping("/create")
-    public String createInstituicao(Model model, @ModelAttribute InstituicaoRecordDto instituicaoRecordDto,
+    public String createInstituicao(Model model, @ModelAttribute @Valid InstituicaoRecordDto instituicaoRecordDto, BindingResult bindingResult,
                                     @RequestParam("imagens") List<MultipartFile> imagens) {
 
-        try {
-            InstituicaoModel instituicaoModel = new InstituicaoModel();
-
-            BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
-            instituicaoService.save(instituicaoModel);
-
-            for (MultipartFile imagem : imagens) {
-                if (!imagem.isEmpty()) {
-                    try {
-
-                        String diretorioDestino = System.getProperty("user.dir") + "/src/main/resources/static/uploads";
-
-                        String nomeArquivo = imagem.getOriginalFilename();
-
-                        String caminhoCompleto = diretorioDestino + "/" + nomeArquivo;
-
-                        byte[] bytes = imagem.getBytes();
-                        Path path = Paths.get(caminhoCompleto);
-                        Files.write(path, bytes);
-
-                        ImagemModel imagemModel = new ImagemModel();
-                        imagemModel.setNomeArquivo(nomeArquivo);
-                        imagemModel.setCaminhoArquivo(caminhoCompleto);
-                        imagemModel.setInstituicao(instituicaoModel);
-
-                        imagemService.save(imagemModel);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-
-                        model.addAttribute("errorMessage", "Erro ao fazer upload de uma ou mais imagens");
-                    }
-                }
-            }
-            model.addAttribute("successMessage", "Instituição em processo de validação, aguarde aprovação!");
-        } catch (ConstraintViolationException e) {
-            model.addAttribute("errorMessage", "CNPJ inválido. Por favor, insira um CNPJ válido.");
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
+            model.addAttribute("errorMessage", errorMessages);
             return "instituicao/cadastro";
         }
+
+        InstituicaoModel instituicaoModel = new InstituicaoModel();
+
+        BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
+        instituicaoService.save(instituicaoModel);
+
+        for (MultipartFile imagem : imagens) {
+            if (!imagem.isEmpty()) {
+                try {
+
+                    String diretorioDestino = System.getProperty("user.dir") + "/src/main/resources/static/uploads";
+
+                    String nomeArquivo = imagem.getOriginalFilename();
+
+                    String caminhoCompleto = diretorioDestino + "/" + nomeArquivo;
+
+                    byte[] bytes = imagem.getBytes();
+                    Path path = Paths.get(caminhoCompleto);
+                    Files.write(path, bytes);
+
+                    ImagemModel imagemModel = new ImagemModel();
+                    imagemModel.setNomeArquivo(nomeArquivo);
+                    imagemModel.setCaminhoArquivo(caminhoCompleto);
+                    imagemModel.setInstituicao(instituicaoModel);
+
+                    imagemService.save(imagemModel);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                    model.addAttribute("errorMessage", "Erro ao fazer upload de uma ou mais imagens");
+                }
+            }
+        }
+        model.addAttribute("successMessage", "Instituição em processo de validação, aguarde aprovação!");
+
 
         return "instituicao/cadastro";
     }
