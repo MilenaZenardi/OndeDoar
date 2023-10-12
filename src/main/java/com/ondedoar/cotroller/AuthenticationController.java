@@ -6,8 +6,12 @@ import com.ondedoar.dto.RegisterDTO;
 import com.ondedoar.model.UserModel;
 import com.ondedoar.repository.UserRepository;
 import com.ondedoar.service.TokenService;
+import com.ondedoar.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -25,18 +30,19 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
+
     @Autowired
     private TokenService tokenService;
 
     @GetMapping("/index")
-    public String index(){
+    public String index() {
         return "index/teste";
     }
 
 
     @GetMapping("/login")
-    public String login(){
+    public String login() {
         return "auth/login";
     }
 
@@ -70,21 +76,31 @@ public class AuthenticationController {
     public String registerUser(@Valid RegisterDTO registerDTO, RedirectAttributes redirectAttributes) {
         String login = registerDTO.login();
 
-        if (userRepository.findByLogin(login) != null) {
+        if (userService.findByLogin(login)) {
             // Se o login já existir, adicione uma mensagem de erro e redirecione de volta para o formulário de registro
             redirectAttributes.addFlashAttribute("errorMessage", "O login já existe. Escolha outro login.");
             return "redirect:/auth/register"; // Redireciona para a página de registro
         }
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
-        UserModel newUser = new UserModel(registerDTO.nome(), login, encryptedPassword, registerDTO.email(), registerDTO.role(), registerDTO.cpf());
+        try {
+            String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
 
-        userRepository.save(newUser);
+            UserModel userModel = new UserModel();
+            BeanUtils.copyProperties(registerDTO, userModel);
+            userService.save(userModel, encryptedPassword);
+        }catch (ConstraintViolationException e) {
+            // Lidere com as violações de validação aqui
+            // Por exemplo, obtenha as mensagens de erro e adicione-as ao atributo "errorMessage"
+            String errorMessage = e.getConstraintViolations().stream()
+                    .map(violation -> violation.getMessage())
+                    .findFirst()
+                    .orElse("Erro de validação desconhecido");
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            return "redirect:/auth/register"; // Redireciona para a página de registro com a mensagem de erro
+        }
 
         // Adicione uma mensagem de sucesso e redirecione para a página de login
-        redirectAttributes.addFlashAttribute("successMessage", "Registro concluído com sucesso!");
+        redirectAttributes.addFlashAttribute("successMessage", "Usuário cadastrado com sucesso!");
         return "redirect:/auth/login"; // Redireciona para a página de login
     }
-
-
 }

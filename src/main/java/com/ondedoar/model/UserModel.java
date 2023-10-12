@@ -2,7 +2,10 @@ package com.ondedoar.model;
 
 import com.ondedoar.enums.UserRole;
 import jakarta.persistence.*;
+
 import lombok.*;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,16 +21,16 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class UserModel implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String nome;
     private String login;
     private String password;
+    @Email
     private String email;
     private UserRole role;
+    @CPF
     private String cpf;
 
     public UserModel(String nome, String login, String password, String email, UserRole role, String cpf) {

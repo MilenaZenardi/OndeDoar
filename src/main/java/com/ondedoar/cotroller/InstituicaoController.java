@@ -37,7 +37,6 @@ public class InstituicaoController {
 
     @PostMapping("/create")
     public String createInstituicao(Model model, @ModelAttribute InstituicaoRecordDto instituicaoRecordDto,
-                                    BindingResult bindingResult,
                                     @RequestParam("imagens") List<MultipartFile> imagens) {
 
         try {
@@ -70,13 +69,13 @@ public class InstituicaoController {
                     } catch (IOException e) {
                         e.printStackTrace();
 
-                        model.addAttribute("erro", "Erro ao fazer upload de uma ou mais imagens");
+                        model.addAttribute("errorMessage", "Erro ao fazer upload de uma ou mais imagens");
                     }
                 }
             }
-            model.addAttribute("message", "Instituição em processo de validação, aguarde aprovação!");
+            model.addAttribute("successMessage", "Instituição em processo de validação, aguarde aprovação!");
         } catch (ConstraintViolationException e) {
-            model.addAttribute("erro", "CNPJ inválido. Por favor, insira um CNPJ válido.");
+            model.addAttribute("errorMessage", "CNPJ inválido. Por favor, insira um CNPJ válido.");
             return "instituicao/cadastro";
         }
 

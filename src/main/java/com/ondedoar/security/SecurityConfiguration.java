@@ -35,6 +35,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/instituicao/create").permitAll()
                         .requestMatchers(HttpMethod.POST, "/instituicao/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "auth/index").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

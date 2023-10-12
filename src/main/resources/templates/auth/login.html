@@ -7,9 +7,15 @@
     <!-- Adicione aqui os links para seus estilos CSS, se aplicável -->
 </head>
 <body>
+<div th:if="${errorMessage}" class="error-message">
+    <p th:text="${errorMessage}"></p>
+</div>
+<div th:if="${successMessage}" class="success-message">
+    <p th:text="${successMessage}"></p>
+</div>
 <div class="container">
     <h2>Login</h2>
-    <form method="POST" th:action="@{/auth/login}" >
+    <form method="POST" th:action="@{/auth/login}">
         <div class="form-group">
             <label for="login">Usuário:</label>
             <input type="text" id="login" name="login" class="form-control" required>

@@ -43,8 +43,7 @@
             <td th:text="${instituicao.categoria}"></td>
             <td>
                 <div th:each="imagem : ${instituicao.imagens}">
-                    <img th:src="@{/uploads/{imageName}(imageName=${imagem.nomeArquivo})}"
-                         alt=th:text="${imagem.nomeArquivo}">
+                    <img th:src="@{/uploads/{imageName}(imageName=${imagem.nomeArquivo})}" th:alt="${imagem.nomeArquivo}">
                 </div>
             </td>
         </tr>
