@@ -13,10 +13,10 @@
     <!-- Adicione aqui os links para seus estilos CSS, se aplicável -->
 </head>
 <body>
-<div th:if="${errorMessage}" class="error-message">
+<div th:if="${errorMessage}" class="alert alert-danger">
     <p th:text="${errorMessage}"></p>
 </div>
-<div th:if="${successMessage}" class="success-message">
+<div th:if="${successMessage}" class="alert alert-success">
     <p th:text="${successMessage}"></p>
 </div>
 <div class="container col-md-2">

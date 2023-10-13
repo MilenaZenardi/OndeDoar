@@ -17,8 +17,11 @@
     <div class="outer-container">
         <div class="container mt-6"> <!-- Adiciona margem superior para centralização -->
             <div class="col-md-8"> <!-- Define a largura do formulário -->
-                <div th:if="${erro}" class="alert alert-danger">
-                    <p th:text="${erro}"></p>
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+                <div th:if="${successMessage}" class="alert alert-success">
+                    <p th:text="${successMessage}"></p>
                 </div>
                 <form th:action="@{/instituicao/create}" method="post" enctype="multipart/form-data">
                     <legend>Cadastro Instituição</legend>
