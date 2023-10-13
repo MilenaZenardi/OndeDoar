@@ -1,83 +1,94 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Cadastro de Instituição</title>
+    <link rel="stylesheet" href="../../static/css/cadastro.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
 </head>
+
 <body>
-<div class="container mt-6"> <!-- Adiciona margem superior para centralização -->
-    <div class="row justify-content-center"> <!-- Centraliza o conteúdo -->
-        <div class="col-md-8"> <!-- Define a largura do formulário -->
-            <div th:if="${errorMessage}" class="alert alert-danger">
-                <p th:text="${errorMessage}"></p>
+<div class="row justify-content-center"> <!-- Centraliza o conteúdo -->
+    <div class="outer-container">
+        <div class="container mt-6"> <!-- Adiciona margem superior para centralização -->
+            <div class="col-md-8"> <!-- Define a largura do formulário -->
+                <div th:if="${erro}" class="alert alert-danger">
+                    <p th:text="${erro}"></p>
+                </div>
+                <form th:action="@{/instituicao/create}" method="post" enctype="multipart/form-data">
+                    <legend>Cadastro Instituição</legend>
+                    <div class="row">
+                        <div class="mb-3 col-auto">
+                            <!-- Usamos col-auto para que o elemento tome apenas o espaço necessário -->
+                            <label class="form-label" for="cnpj">CNPJ</label>
+                            <input class="form-control" type="text" id="cnpj" name="cnpj" required>
+                        </div>
+
+                        <div class="mb-3 col">
+                            <!-- O col sem especificação irá ocupar o espaço restante disponível -->
+                            <label class="form-label" for="razaoSocial">Razão Social</label>
+                            <input class="form-control" type="text" id="razaoSocial" name="razaoSocial">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="responsavel">Responsável</label>
+                        <input class="form-control" type="text" id="responsavel" name="responsavel" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-auto">
+                            <label class="form-label" for="endereco">Endereço</label>
+                            <input class="form-control" type="text" id="endereco" name="endereco">
+                        </div>
+
+                        <div class="mb-3 col">
+                            <label class="form-label" for="cep">CEP</label>
+                            <input class="form-control" type="text" id="cep" name="cep">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-auto">
+                            <label class="form-label" for="telefone1">Telefone 1</label>
+                            <input class="form-control" type="text" name="telefones" id="telefone1" required>
+                        </div>
+
+                        <div class="mb-3 col">
+                            <label class="form-label" for="telefone2">Telefone 2</label>
+                            <input class="form-control" type="text" name="telefones" id="telefone2">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="imagens">Imagens</label>
+                        <input class="form-control" type="file" id="imagens" name="imagens" accept="image/*"
+                               multiple>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="categoria">Categoria</label>
+                        <select class="form-select" id="categoria" name="categoria" required>
+                            <option value="">Selecione a Categoria</option>
+                            <option th:each="categoria : ${T(com.ondedoar.enums.InstituicaoCategoria).values()}"
+                                    th:value="${categoria}"
+                                    th:text="${#strings.capitalize(categoria.toString().toLowerCase())}"></option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn d-block mx-auto">Cadastrar</button>
+                </form>
             </div>
-            <div th:if="${successMessage}" class="alert alert-success" role="alert">
-                <p th:text="${successMessage}"></p>
-            </div>
-            <form th:action="@{/instituicao/create}" method="post" enctype="multipart/form-data">
-                <legend>Cadastro Instituição</legend>
-                <div class="mb-3">
-                    <label class="form-label" for="cnpj">CNPJ:</label>
-                    <input class="form-control" type="text" id="cnpj" name="cnpj" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="razaoSocial">Razão Social:</label>
-                    <input class="form-control" type="text" id="razaoSocial" name="razaoSocial">
-                </div>
-
-                <div class="mb-3">
-                    <label for="descricao" class="form-label">Descrição</label>
-                    <textarea class="form-control" id="descricao" name="descricao" rows="3" required></textarea>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="responsavel">Responsável:</label>
-                    <input class="form-control" type="text" id="responsavel" name="responsavel" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="endereco">Endereço:</label>
-                    <input class="form-control" type="text" id="endereco" name="endereco">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="cep">CEP:</label>
-                    <input class="form-control" type="text" id="cep" name="cep">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="telefone1">Telefone 1:</label>
-                    <input class="form-control" type="text" name="telefones" id="telefone1" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="telefone2">Telefone 2:</label>
-                    <input class="form-control" type="text" name="telefones" id="telefone2">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="imagens">Imagens:</label>
-                    <input class="form-control" type="file" id="imagens" name="imagens" accept="image/*" multiple>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="categoria">Categoria:</label>
-                    <select class="form-select" id="categoria" name="categoria" required>
-                        <option value="">Selecione a Categoria</option>
-                        <option th:each="categoria : ${T(com.ondedoar.enums.InstituicaoCategoria).values()}"
-                                th:value="${categoria}"
-                                th:text="${#strings.capitalize(categoria.toString().toLowerCase())}"></option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-dark">Cadastrar</button>
-            </form>
         </div>
     </div>
 </div>
 </body>
+
 </html>

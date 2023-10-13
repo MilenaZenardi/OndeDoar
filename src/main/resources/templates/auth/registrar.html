@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Usuário</title>
+    <title>Cadastro de Usuário</title>
+    <link rel="stylesheet" href="../../static/css/registrar.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
     <style>
         .error-message {
             color: red;
@@ -13,36 +20,66 @@
         }
     </style>
 </head>
+
 <body>
-<h1>Registro de Novo Usuário</h1>
+<!-- Exibe mensagens de erro ou sucesso, se houver -->
+<div th:if="${errorMessage}" class="error-message">
+    <p th:text="${errorMessage}"></p>
+</div>
+<div th:if="${successMessage}" class="success-message">
+    <p th:text="${successMessage}"></p>
+</div>
 
+<div class="outer-container">
+    <div class="container mt-6"> <!-- Adiciona margem superior para centralização -->
+        <div class="row justify-content-center"> <!-- Centraliza o conteúdo -->
+            <div class="col-md-8"> <!-- Define a largura do formulário -->
+                <form method="POST" th:action="@{/auth/register}">
+                    <legend>Cadastro de usuário</legend>
 
-    <!-- Exibe mensagens de erro ou sucesso, se houver -->
-    <div th:if="${errorMessage}" class="error-message">
-        <p th:text="${errorMessage}"></p>
+                    <div class="row">
+                        <div class="mb-3 col-auto">
+                            <!-- Usamos col-auto para que o elemento tome apenas o espaço necessário -->
+                            <label class="form-label"  for="nome">Nome:</label>
+                            <input class="form-control" type="text" id="nome" name="nome" required><br><br>
+                        </div>
+
+                        <div class="mb-3 col">
+                            <!-- O col sem especificação irá ocupar o espaço restante disponível -->
+                            <label class="form-label"  for="cpf">CPF:</label>
+                            <input class="form-control" type="text" id="cpf" name="cpf" required><br><br>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"  for="email">Email:</label>
+                        <input class="form-control" type="email" id="email" name="email" required><br><br>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-auto">
+                            <!-- Usamos col-auto para que o elemento tome apenas o espaço necessário -->
+                            <label class="form-label"  for="login">Login:</label>
+                            <input class="form-control" type="text" id="login" name="login" required><br><br>
+                        </div>
+
+                        <div class="mb-3 col">
+                            <!-- O col sem especificação irá ocupar o espaço restante disponível -->
+                            <label class="form-label"  for="password">Senha:</label>
+                            <input class="form-control" type="password" id="password" name="password" required><br><br>
+                        </div>
+
+                    </div>
+
+                    <!--<input type="submit" value="Registrar">-->
+                    <button type="submit" class="btn d-block mx-auto">Cadastrar</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <div th:if="${successMessage}" class="success-message">
-        <p th:text="${successMessage}"></p>
-    </div>
+</div>
 
-<!-- Formulário de registro -->
-<form method="POST" th:action="@{/auth/register}">
-    <label for="nome">Nome:</label>
-    <input type="text" id="nome" name="nome" required><br><br>
-
-    <label for="login">Login:</label>
-    <input type="text" id="login" name="login" required><br><br>
-
-    <label for="password">Senha:</label>
-    <input type="password" id="password" name="password"  required><br><br>
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br><br>
-
-    <label for="cpf">CPF:</label>
-    <input type="text" id="cpf" name="cpf" required><br><br>
-
-    <input type="submit" value="Registrar">
-</form>
 </body>
+
 </html>
