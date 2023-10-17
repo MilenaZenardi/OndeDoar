@@ -34,7 +34,7 @@ public class InstituicaoController {
 
     @GetMapping("/create")
     public String create() {
-        return "instituicao/cadastro";
+        return "instituicao/form";
     }
 
     @PostMapping("/create")
@@ -83,7 +83,7 @@ public class InstituicaoController {
         model.addAttribute("successMessage", "Instituição em processo de validação, aguarde aprovação!");
 
 
-        return "instituicao/cadastro";
+        return "instituicao/form";
     }
 
     @GetMapping()
@@ -93,7 +93,7 @@ public class InstituicaoController {
 
         model.addAttribute("instituicoes", instituicoes);
 
-        return "instituicao/listar";
+        return "instituicao/list";
     }
     /*
 

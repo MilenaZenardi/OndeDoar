@@ -3,7 +3,7 @@ html {
 }
 
 body {
-    background-image: url('../images/background.png');
+    background-image: url('../../images/background.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -21,8 +21,7 @@ body {
 }
 
 .container {
-    display: flex;
-    justify-content: center;
+    width: 100%;
     max-width: 1200px;
 }
 
@@ -33,11 +32,8 @@ legend {
     margin-top: 20px;
 }
 
-.alert {
-    display: none;
-}
 
-.col-md-8{
+.col-md-8 {
     background-color: rgba(255, 255, 255, 0.411);
     border-radius: 20px;
     font-size: 14px;
@@ -48,6 +44,7 @@ legend {
 .form-select {
     height: 30px;
 }
+
 .mb-3 {
     display: flex;
     align-items: center;
@@ -57,34 +54,17 @@ legend {
     margin-right: 10px;
 }
 
-#telefone1,
-#telefone2 {
-    width: 200px;
-}
-#imagens,
-#categoria {
-    width: 450px;
-    font-size: 14px;
-    color: rgba(71, 71, 71, 0.829);
-}
-#endereco{
-    width: 630px;
+#nome {
+    width: 580px;
 }
 
-#cep {
-    width: 100px;
+#email {
+    width: 400px;
 }
 
-#cnpj {
-    width: 180px;
-}
-
-#responsavel {
-    width: 420px;
-}
-
-#razaoSocial {
-    width: 520px;
+#login,
+#password {
+    width: 250px;
 }
 
 button.btn {

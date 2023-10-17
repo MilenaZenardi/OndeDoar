@@ -71,7 +71,7 @@ public class AuthenticationController {
 
     @GetMapping("/register")
     public String register() {
-        return "auth/registrar";
+        return "auth/form";
     }
 
 
@@ -80,7 +80,7 @@ public class AuthenticationController {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessages);
-            return "redirect:/auth/register";
+            return "redirect:/auth/form";
         }
 
         String login = registerDTO.login();
@@ -88,7 +88,7 @@ public class AuthenticationController {
         if (userService.findByLogin(login)) {
             // Se o login já existir, adicione uma mensagem de erro e redirecione de volta para o formulário de registro
             redirectAttributes.addFlashAttribute("errorMessage", "O login já existe. Escolha outro login.");
-            return "redirect:/auth/register"; // Redireciona para a página de registro
+            return "redirect:/auth/form"; // Redireciona para a página de registro
         }
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
