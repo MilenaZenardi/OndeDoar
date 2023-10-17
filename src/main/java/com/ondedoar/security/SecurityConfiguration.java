@@ -26,6 +26,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/create").permitAll()
@@ -34,7 +35,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/instituicao").permitAll()
                         .requestMatchers(HttpMethod.GET, "/instituicao/create").permitAll()
                         .requestMatchers(HttpMethod.POST, "/instituicao/create").permitAll()
-                        .requestMatchers(HttpMethod.GET, "auth/index").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/index").permitAll()
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/css/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/images/**").permitAll()

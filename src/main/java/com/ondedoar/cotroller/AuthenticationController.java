@@ -34,12 +34,6 @@ public class AuthenticationController {
     @Autowired
     private TokenService tokenService;
 
-    @GetMapping("/index")
-    public String index() {
-        return "index/teste";
-    }
-
-
     @GetMapping("/login")
     public String login() {
         return "auth/login";
@@ -56,7 +50,7 @@ public class AuthenticationController {
             var token = tokenService.generateToken((UserModel) auth.getPrincipal());
 
             // Redirecione o usuário para a página de sucesso ou página inicial
-            return "redirect:/auth/index";
+            return "redirect:/";
         } else {
             // Se a autenticação falhar, você pode adicionar uma mensagem de erro à página de login, se necessário
 
