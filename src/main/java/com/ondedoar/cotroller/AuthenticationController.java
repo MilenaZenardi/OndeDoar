@@ -1,27 +1,23 @@
 package com.ondedoar.cotroller;
 
 import com.ondedoar.dto.AuthenticationDTO;
-import com.ondedoar.dto.LoginResponseDTO;
-import com.ondedoar.dto.RegisterDTO;
+import com.ondedoar.dto.UserDTO;
 import com.ondedoar.exception.ValidationUtils;
 import com.ondedoar.model.UserModel;
-import com.ondedoar.repository.UserRepository;
 import com.ondedoar.service.TokenService;
 import com.ondedoar.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -69,14 +65,14 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/register")
-    public String register() {
+    @GetMapping("/create")
+    public String create() {
         return "auth/form";
     }
 
 
-    @PostMapping("/register")
-    public String registerUser(@Valid RegisterDTO registerDTO,BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    @PostMapping("/create")
+    public String createUser(@Valid UserDTO registerDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessages);
