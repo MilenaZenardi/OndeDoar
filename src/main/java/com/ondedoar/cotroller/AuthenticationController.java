@@ -40,22 +40,27 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@Valid AuthenticationDTO authenticationDTO, HttpServletRequest request) {
+    public String loginUser(@Valid AuthenticationDTO authenticationDTO, RedirectAttributes redirectAttributes, HttpServletRequest request) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.login(), authenticationDTO.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        if (auth.isAuthenticated()) {
+        try {
+            var auth = this.authenticationManager.authenticate(usernamePassword);
+            if (auth.isAuthenticated()) {
 
-            // Se a autenticação for bem-sucedida, gere um token e armazene-o de forma apropriada, como em uma sessão ou cookie
-            var token = tokenService.generateToken((UserModel) auth.getPrincipal());
+                // Se a autenticação for bem-sucedida, gere um token e armazene-o de forma apropriada, como em uma sessão ou cookie
+                var token = tokenService.generateToken((UserModel) auth.getPrincipal());
 
-            // Redirecione o usuário para a página de sucesso ou página inicial
-            return "redirect:/";
-        } else {
-            // Se a autenticação falhar, você pode adicionar uma mensagem de erro à página de login, se necessário
+                return "redirect:/";
+            } else {
+                // Se a autenticação falhar, você pode adicionar uma mensagem de erro à página de login, se necessário
+                redirectAttributes.addFlashAttribute("errorMessage", "Autenticação falhou.");
 
-            // Redirecione o usuário de volta para a página de login com uma mensagem de erro
-            return "redirect:/auth/login"; // Substitua "/auth/login" pela URL da sua página de login
+                return "redirect:/auth/login";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Login ou senha inválido.");
+
+            return "redirect:/auth/login";
         }
     }
 
@@ -64,31 +69,37 @@ public class AuthenticationController {
         return "auth/form";
     }
 
-
     @PostMapping("/create")
-    public String createUser(@Valid UserDTO registerDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String createUser(@Valid UserDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessages);
-            return "redirect:/auth/form";
+            return "redirect:/auth/create";
         }
 
-        String login = registerDTO.login();
+        try {
+            String login = userDTO.login();
 
-        if (userService.findByLogin(login)) {
-            // Se o login já existir, adicione uma mensagem de erro e redirecione de volta para o formulário de registro
-            redirectAttributes.addFlashAttribute("errorMessage", "O login já existe. Escolha outro login.");
-            return "redirect:/auth/form"; // Redireciona para a página de registro
+            if (userService.findByLogin(login)) {
+                // Se o login já existir, adicione uma mensagem de erro e redirecione de volta para o formulário de registro
+                redirectAttributes.addFlashAttribute("errorMessage", "O login já existe. Escolha outro login.");
+                return "redirect:/auth/create"; // Redireciona para a página de registro
+            }
+
+            String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.password());
+            UserModel userModel = new UserModel();
+            BeanUtils.copyProperties(userDTO, userModel);
+            userService.save(userModel, encryptedPassword);
+
+
+            // Adicione uma mensagem de sucesso e redirecione para a página de login
+            redirectAttributes.addFlashAttribute("successMessage", "Usuário cadastrado com sucesso!");
+            return "redirect:/auth/login"; // Redireciona para a página de login
+        } catch (Exception e) {
+            String errorMessage = e.getMessage(); // Aqui você pode obter a mensagem de erro
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            return "redirect:/auth/create";
         }
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.password());
-        UserModel userModel = new UserModel();
-        BeanUtils.copyProperties(registerDTO, userModel);
-        userService.save(userModel, encryptedPassword);
-
-
-        // Adicione uma mensagem de sucesso e redirecione para a página de login
-        redirectAttributes.addFlashAttribute("successMessage", "Usuário cadastrado com sucesso!");
-        return "redirect:/auth/login"; // Redireciona para a página de login
     }
 }

@@ -44,7 +44,7 @@ public class InstituicaoController {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
             model.addAttribute("errorMessage", errorMessages);
-            return "instituicao/cadastro";
+            return "instituicao/form";
         }
 
         InstituicaoModel instituicaoModel = new InstituicaoModel();
