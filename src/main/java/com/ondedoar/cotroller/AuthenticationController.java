@@ -6,7 +6,9 @@ import com.ondedoar.exception.ValidationUtils;
 import com.ondedoar.model.UserModel;
 import com.ondedoar.service.TokenService;
 import com.ondedoar.service.UserService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-
 
 @Controller
 @RequestMapping("/auth")
@@ -40,7 +41,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@Valid AuthenticationDTO authenticationDTO, RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String loginUser(@Valid AuthenticationDTO authenticationDTO, RedirectAttributes redirectAttributes, HttpServletResponse response) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(authenticationDTO.login(), authenticationDTO.password());
 
         try {
@@ -49,6 +50,11 @@ public class AuthenticationController {
 
                 // Se a autenticação for bem-sucedida, gere um token e armazene-o de forma apropriada, como em uma sessão ou cookie
                 var token = tokenService.generateToken((UserModel) auth.getPrincipal());
+
+                Cookie cookie = new Cookie("authToken", token);
+                cookie.setMaxAge(3600); // Tempo de vida do cookie em segundos (por exemplo, 1 hora)
+                cookie.setPath("/"); // Define o caminho do cookie como raiz para que seja acessível em todo o aplicativo
+                response.addCookie(cookie);
 
                 return "redirect:/";
             } else {
