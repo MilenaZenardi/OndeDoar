@@ -1,0 +1,60 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+legend {
+    color: rgb(3, 80, 80);
+    text-align: center;
+    border-bottom-style: double;
+}
+
+body {
+    background-image: url('../../images/background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.411);
+    border-radius: 20px;
+    font-size: 14px;
+    padding: 15px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    margin-top: 15px;
+}
+
+button.btn {
+    padding: 7px 15px;
+    background-color: rgba(229, 255, 0, 0.144);
+    color: rgb(2, 31, 31);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+button.btn:hover {
+    background-color: rgba(0, 134, 134, 0.212);
+}

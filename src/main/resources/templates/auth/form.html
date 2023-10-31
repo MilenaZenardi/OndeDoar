@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Usuário</title>
+    <link rel="stylesheet" th:href="@{/css/auth/form.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+
+</head>
+<body>
+<!-- Exibe mensagens de erro ou sucesso, se houver -->
+<div th:if="${errorMessage}" class="alert alert-danger">
+    <p th:text="${errorMessage}"></p>
+</div>
+<div th:if="${successMessage}" class="alert alert-success">
+    <p th:text="${successMessage}"></p>
+</div>
+
+<div class="outer-container">
+    <div class="container mt-6"> <!-- Adiciona margem superior para centralização -->
+        <div class="row justify-content-center"> <!-- Centraliza o conteúdo -->
+            <div class="col-md-8"> <!-- Define a largura do formulário -->
+                <form method="POST" th:action="@{/auth/create}">
+                    <legend>Cadastro de usuário</legend>
+
+                    <div class="row">
+                        <div class="mb-3 col-auto">
+                            <!-- Usamos col-auto para que o elemento tome apenas o espaço necessário -->
+                            <label class="form-label"  for="nome">Nome:</label>
+                            <input class="form-control" type="text" id="nome" name="nome" required><br><br>
+                        </div>
+
+                        <div class="mb-3 col">
+                            <!-- O col sem especificação irá ocupar o espaço restante disponível -->
+                            <label class="form-label"  for="cpf">CPF:</label>
+                            <input class="form-control" type="text" id="cpf" name="cpf" required><br><br>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"  for="email">Email:</label>
+                        <input class="form-control" type="email" id="email" name="email" required><br><br>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-auto">
+                            <!-- Usamos col-auto para que o elemento tome apenas o espaço necessário -->
+                            <label class="form-label"  for="login">Login:</label>
+                            <input class="form-control" type="text" id="login" name="login" required><br><br>
+                        </div>
+
+                        <div class="mb-3 col">
+                            <!-- O col sem especificação irá ocupar o espaço restante disponível -->
+                            <label class="form-label"  for="password">Senha:</label>
+                            <input class="form-control" type="password" id="password" name="password" required><br><br>
+                        </div>
+
+                    </div>
+
+                    <!--<input type="submit" value="Registrar">-->
+                    <button type="submit" class="btn d-block mx-auto">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
