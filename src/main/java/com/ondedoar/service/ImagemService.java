@@ -15,4 +15,7 @@ public class ImagemService {
     }
 
 
+    public void delete(int id) {
+
+    }
 }

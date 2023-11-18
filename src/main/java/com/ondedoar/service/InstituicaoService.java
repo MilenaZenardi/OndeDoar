@@ -29,13 +29,8 @@ public class InstituicaoService {
         return instituicaoRepository.findByCategory(categoria);
     }
 
-    public Optional<InstituicaoModel> getById(int id) {
-        return instituicaoRepository.findById(id);
-    }
+    public Optional<InstituicaoModel> getById(int id) {return instituicaoRepository.findById(id);}
 
-    public InstituicaoModel update(InstituicaoModel instituicaoModel) {
-        return instituicaoRepository.save(instituicaoModel);
-    }
     public String delete(int id) {
             instituicaoRepository.deleteById(id);
         return "Deletado com sucesso";

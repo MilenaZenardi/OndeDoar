@@ -12,6 +12,7 @@
 </head>
 
 <body>
+<div th:replace="~{index :: navigation}"></div>
 <div class="row justify-content-center"> <!-- Centraliza o conteúdo -->
     <div class="outer-container">
         <div class="container mt-6"> <!-- Adiciona margem superior para centralização -->
@@ -28,45 +29,45 @@
                         <div class="mb-3 col-auto">
                             <!-- Usamos col-auto para que o elemento tome apenas o espaço necessário -->
                             <label class="form-label" for="cnpj">CNPJ</label>
-                            <input class="form-control" type="text" id="cnpj" name="cnpj" required>
+                            <input class="form-control" type="text" id="cnpj" name="cnpj" th:value="${instituicao != null? instituicao.get().cnpj : ''}" required>
                         </div>
 
                         <div class="mb-3 col">
                             <!-- O col sem especificação irá ocupar o espaço restante disponível -->
                             <label class="form-label" for="razaoSocial">Razão Social</label>
-                            <input class="form-control" type="text" id="razaoSocial" name="razaoSocial">
+                            <input class="form-control" type="text" id="razaoSocial" name="razaoSocial" th:value="${instituicao != null? instituicao.get().razaoSocial : ''}">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="descricao" class="form-label">Descrição</label>
-                        <textarea class="form-control" id="descricao" name="descricao" rows="3" required></textarea>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="3" th:text="${instituicao != null? instituicao.get().descricao : ''}" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="responsavel">Responsável</label>
-                        <input class="form-control" type="text" id="responsavel" name="responsavel" required>
+                        <input class="form-control" type="text" id="responsavel" name="responsavel" th:value="${instituicao != null? instituicao.get().responsavel : ''}" required>
                     </div>
 
                     <div class="row">
                         <div class="mb-3 col-auto">
                             <label class="form-label" for="endereco">Endereço</label>
-                            <input class="form-control" type="text" id="endereco" name="endereco">
+                            <input class="form-control" type="text" id="endereco" name="endereco" th:value="${instituicao != null? instituicao.get().endereco : ''}">
                         </div>
 
                         <div class="mb-3 col">
                             <label class="form-label" for="cep">CEP</label>
-                            <input class="form-control" type="text" id="cep" name="cep">
+                            <input class="form-control" type="text" id="cep" name="cep" th:value="${instituicao != null? instituicao.get().cep : ''}">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="mb-3 col-auto">
                             <label class="form-label" for="telefone1">Telefone 1</label>
-                            <input class="form-control" type="text" name="telefones" id="telefone1" required>
+                            <input class="form-control" type="text" name="telefones" id="telefone1" th:value="${instituicao != null && instituicao.get().getTelefones().get(0) != null? instituicao.get().getTelefones().get(0) : ''}" required>
                         </div>
 
                         <div class="mb-3 col">
                             <label class="form-label" for="telefone2">Telefone 2</label>
-                            <input class="form-control" type="text" name="telefones" id="telefone2">
+                            <input class="form-control" type="text" name="telefones" id="telefone2" th:value="${instituicao != null && instituicao.get().getTelefones().get(1) != null? instituicao.get().getTelefones().get(1) : ''}">
                         </div>
                     </div>
 
@@ -79,12 +80,15 @@
                     <div class="mb-3">
                         <label class="form-label" for="categoria">Categoria</label>
                         <select class="form-select" id="categoria" name="categoria" required>
-                            <option value="">Selecione a Categoria</option>
+                            <option >Selecione a Categoria</option>
                             <option th:each="categoria : ${T(com.ondedoar.enums.InstituicaoCategoria).values()}"
                                     th:value="${categoria}"
-                                    th:text="${#strings.capitalize(categoria.toString().toLowerCase())}"></option>
+                                    th:text="${#strings.capitalize(categoria.toString().toLowerCase())}"
+                                    th:selected="${instituicao != null && instituicao.get().getCategoria() == categoria}"></option>
                         </select>
                     </div>
+
+                    <input type="hidden" th:if="${id != null}" th:value="${id}" name="id" />
                     <button type="submit" class="btn d-block mx-auto">Cadastrar</button>
                 </form>
             </div>

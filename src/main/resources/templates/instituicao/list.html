@@ -10,6 +10,7 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+<div th:replace="~{index :: navigation}"></div>
 <div class="container mt-6">
     <h1>Lista de Instituições</h1>
 
@@ -28,7 +29,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="instituicao : ${instituicoes}">
+        <tr th:each="instituicao, iterStat: ${instituicoes}">
             <td th:text="${instituicao.cnpj}"></td>
             <td th:text="${instituicao.razaoSocial}"></td>
             <td th:text="${instituicao.descricao}"></td>
@@ -45,6 +46,13 @@
                 <div th:each="imagem : ${instituicao.imagens}">
                     <img th:src="@{/uploads/{imageName}(imageName=${imagem.nomeArquivo})}" th:alt="${imagem.nomeArquivo}">
                 </div>
+            </td>
+            <td>
+                <form th:id="'updateForm_' + ${iterStat.index}" th:action="@{/instituicao/create}" method="get" enctype="multipart/form-data">
+                    <input type="hidden" th:name="id" th:value="${instituicao.id}" />
+
+                    <a href="#" th:onclick="'document.getElementById(\'updateForm_' + ${iterStat.index} + '\').submit(); return false;'">Update</a>
+                </form>
             </td>
         </tr>
         </tbody>
