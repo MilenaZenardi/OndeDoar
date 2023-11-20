@@ -1,6 +1,7 @@
 package com.ondedoar.cotroller;
 
 import com.ondedoar.dto.InstituicaoRecordDto;
+import com.ondedoar.exception.ValidationUtils;
 import com.ondedoar.model.ImagemModel;
 import com.ondedoar.model.InstituicaoModel;
 import com.ondedoar.service.ImagemService;
@@ -44,21 +45,24 @@ public class InstituicaoController {
     }
 
     @PostMapping("/create")
-    public String createInstituicao(Model model, @ModelAttribute @Valid InstituicaoRecordDto instituicaoRecordDto, @RequestParam(value = "id", required = false) Integer id, BindingResult bindingResult,
-                                    @RequestParam("imagens") List<MultipartFile> imagens) {
+    public String createInstituicao(Model model, @ModelAttribute @Valid InstituicaoRecordDto instituicaoRecordDto,  BindingResult bindingResult,
+                                    @RequestParam("imagens") List<MultipartFile> imagens, @RequestParam(value = "id", required = false) Integer id) {
+
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
+            model.addAttribute("errorMessage", errorMessages);
+            return "instituicao/form";
+        }
 
         InstituicaoModel instituicaoModel = new InstituicaoModel();
+        BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
 
         if (id != null) {
             Optional<InstituicaoModel> instituicaoModelUpdate = instituicaoService.getById(id);
             if (instituicaoModelUpdate.isPresent()) {
                 InstituicaoModel instituicaoExistente = instituicaoModelUpdate.get();
-
-                BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
                 instituicaoModel.setId(instituicaoExistente.getId());
             }
-        } else {
-            BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
         }
 
         instituicaoService.save(instituicaoModel);
@@ -95,8 +99,8 @@ public class InstituicaoController {
     }
 
     @GetMapping()
-    public String getAllInstituicao(Model model) {
-        List<InstituicaoModel> instituicoes = instituicaoService.getAll();
+    public String getAllInstituicoesAtivas(Model model) {
+        List<InstituicaoModel> instituicoes = instituicaoService.getAllActives();
         model.addAttribute("instituicoes", instituicoes);
 
         return "instituicao/list";

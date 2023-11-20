@@ -21,9 +21,14 @@ public class InstituicaoService {
         return instituicaoRepository.save(instituicaoModel);
     }
 
-    public List<InstituicaoModel> getAll() {
-        return instituicaoRepository.findAll();
+    public List<InstituicaoModel> getAllActives() {
+        return instituicaoRepository.findAllActives();
     }
+
+    public List<InstituicaoModel> getAllAnalizes() {
+        return instituicaoRepository.findAllAnalyzes();
+    }
+
 
     public List<InstituicaoModel> getCategoria(InstituicaoCategoria categoria) {
         return instituicaoRepository.findByCategory(categoria);
@@ -34,4 +39,6 @@ public class InstituicaoService {
     public void delete(Integer id) {
         this.instituicaoRepository.deleteById(id);
     }
+
+
 }
