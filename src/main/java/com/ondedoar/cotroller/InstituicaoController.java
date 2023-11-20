@@ -101,4 +101,11 @@ public class InstituicaoController {
 
         return "instituicao/list";
     }
+
+    @GetMapping({"/delete/{id}"})
+    public String deleteInstituicao(@PathVariable Integer id, Model model) {
+        this.instituicaoService.delete(id);
+        model.addAttribute("successMessage", "Instituição excluída com sucesso!");
+        return "redirect:/instituicao";
+    }
 }

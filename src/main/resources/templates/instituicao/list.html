@@ -54,6 +54,12 @@
                     <a href="#" th:onclick="'document.getElementById(\'updateForm_' + ${iterStat.index} + '\').submit(); return false;'">Update</a>
                 </form>
             </td>
+            <td>
+                <form th:action="@{/instituicao/delete/{id}(id=${instituicao.id})}" method="get" onsubmit="return confirm('Tem certeza que deseja excluir esta instituição?')">
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <button type="submit" class="btn btn-danger" >Excluir</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -35,6 +35,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/instituicao").permitAll()
                         .requestMatchers(HttpMethod.GET, "/instituicao/create").permitAll()
                         .requestMatchers(HttpMethod.POST, "/instituicao/create").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/instituicao/delete/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/index").permitAll()
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/css/**").permitAll()

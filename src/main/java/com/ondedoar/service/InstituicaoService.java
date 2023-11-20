@@ -31,8 +31,7 @@ public class InstituicaoService {
 
     public Optional<InstituicaoModel> getById(int id) {return instituicaoRepository.findById(id);}
 
-    public String delete(int id) {
-            instituicaoRepository.deleteById(id);
-        return "Deletado com sucesso";
+    public void delete(Integer id) {
+        this.instituicaoRepository.deleteById(id);
     }
 }
