@@ -36,21 +36,22 @@ public class InstituicaoController {
     public String create(@RequestParam(value = "id", required = false) Integer id, Model model) {
 
         if (id != null) {
-            Optional<InstituicaoModel> instituicaoModel = instituicaoService.getById(id);
+            InstituicaoModel instituicaoModel = instituicaoService.getById(id);
             model.addAttribute("instituicao", instituicaoModel);
-            model.addAttribute("id", instituicaoModel.get().getId());
+            model.addAttribute("id", instituicaoModel.getId());
         }
 
         return "instituicao/form";
     }
 
     @PostMapping("/create")
-    public String createInstituicao(Model model, @ModelAttribute @Valid InstituicaoRecordDto instituicaoRecordDto,  BindingResult bindingResult,
+    public String createInstituicao(Model model, @ModelAttribute @Valid InstituicaoRecordDto instituicaoRecordDto, BindingResult bindingResult,
                                     @RequestParam("imagens") List<MultipartFile> imagens, @RequestParam(value = "id", required = false) Integer id) {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
             model.addAttribute("errorMessage", errorMessages);
+            model.addAttribute("instituicao",instituicaoRecordDto);
             return "instituicao/form";
         }
 
@@ -58,11 +59,9 @@ public class InstituicaoController {
         BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
 
         if (id != null) {
-            Optional<InstituicaoModel> instituicaoModelUpdate = instituicaoService.getById(id);
-            if (instituicaoModelUpdate.isPresent()) {
-                InstituicaoModel instituicaoExistente = instituicaoModelUpdate.get();
-                instituicaoModel.setId(instituicaoExistente.getId());
-            }
+            InstituicaoModel instituicaoModelUpdate = instituicaoService.getById(id);
+            instituicaoModel.setId(instituicaoModelUpdate.getId());
+
         }
 
         instituicaoService.save(instituicaoModel);

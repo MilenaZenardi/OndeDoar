@@ -16,10 +16,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -81,6 +83,7 @@ public class AuthenticationController {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessages);
+            redirectAttributes.addFlashAttribute("user", userDTO );
             return "redirect:/auth/create";
         }
 
@@ -90,6 +93,7 @@ public class AuthenticationController {
             if (userService.findByLogin(login)) {
                 // Se o login já existir, adicione uma mensagem de erro e redirecione de volta para o formulário de registro
                 redirectAttributes.addFlashAttribute("errorMessage", "O login já existe. Escolha outro login.");
+                redirectAttributes.addFlashAttribute("user", userDTO );
                 return "redirect:/auth/create"; // Redireciona para a página de registro
             }
 
@@ -103,8 +107,9 @@ public class AuthenticationController {
             redirectAttributes.addFlashAttribute("successMessage", "Usuário cadastrado com sucesso!");
             return "redirect:/auth/login"; // Redireciona para a página de login
         } catch (Exception e) {
-            String errorMessage = e.getMessage(); // Aqui você pode obter a mensagem de erro
+            String errorMessage = e.getMessage();
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            redirectAttributes.addFlashAttribute("user", userDTO );
             return "redirect:/auth/create";
         }
     }

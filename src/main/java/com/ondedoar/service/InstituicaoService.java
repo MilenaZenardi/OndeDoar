@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InstituicaoService {
@@ -34,7 +33,11 @@ public class InstituicaoService {
         return instituicaoRepository.findByCategory(categoria);
     }
 
-    public Optional<InstituicaoModel> getById(int id) {return instituicaoRepository.findById(id);}
+    public InstituicaoModel getById(int id) {
+        InstituicaoModel instituicaoModel =  instituicaoRepository.getById(id);
+
+        return instituicaoModel;
+    }
 
     public void delete(Integer id) {
         this.instituicaoRepository.deleteById(id);
