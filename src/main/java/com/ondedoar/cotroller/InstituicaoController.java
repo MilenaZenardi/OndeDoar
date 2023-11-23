@@ -1,6 +1,7 @@
 package com.ondedoar.cotroller;
 
 import com.ondedoar.dto.InstituicaoRecordDto;
+import com.ondedoar.enums.InstituicaoStatus;
 import com.ondedoar.exception.ValidationUtils;
 import com.ondedoar.model.ImagemModel;
 import com.ondedoar.model.InstituicaoModel;
@@ -51,7 +52,7 @@ public class InstituicaoController {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
             model.addAttribute("errorMessage", errorMessages);
-            model.addAttribute("instituicao",instituicaoRecordDto);
+            model.addAttribute("instituicao", instituicaoRecordDto);
             return "instituicao/form";
         }
 
@@ -64,6 +65,7 @@ public class InstituicaoController {
 
         }
 
+        instituicaoModel.setStatus(InstituicaoStatus.ANALISE);
         instituicaoService.save(instituicaoModel);
 
         for (MultipartFile imagem : imagens) {
@@ -111,4 +113,26 @@ public class InstituicaoController {
         model.addAttribute("successMessage", "Instituição excluída com sucesso!");
         return "redirect:/instituicao";
     }
+
+    @GetMapping("/analise")
+    public String getAllInstituicoesAnalise(Model model) {
+        List<InstituicaoModel> instituicoes = instituicaoService.getAllAnalizes();
+        model.addAttribute("instituicoes", instituicoes);
+
+        return "instituicao/analise";
+    }
+
+    @PostMapping("/analise")
+    public String aprovarInstituicao(Model model, @RequestParam(value = "id", required = false) Integer id) {
+
+        if(id != null) {
+            InstituicaoModel instituicaoModel = instituicaoService.getById(id);
+            instituicaoModel.setStatus(InstituicaoStatus.ATIVO);
+            instituicaoService.save(instituicaoModel);
+            model.addAttribute("successMessage", "Instituição ativada com sucesso!");
+        }
+
+        return "redirect:/instituicao/analise";
+    }
+
 }

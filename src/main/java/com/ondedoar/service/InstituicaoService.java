@@ -16,7 +16,6 @@ public class InstituicaoService {
     InstituicaoRepository instituicaoRepository;
 
     public InstituicaoModel save(InstituicaoModel instituicaoModel) {
-        instituicaoModel.setStatus(InstituicaoStatus.ANALISE);
         return instituicaoRepository.save(instituicaoModel);
     }
 
