@@ -35,7 +35,7 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <li><a class="dropdown-item" th:href="@{/instituicao}">Pesquisar</a></li>
                         <li><a class="dropdown-item" th:href="@{/instituicao/create}">Cadastrar</a></li>
-                        <li th:if="${authAdmin == true}"><a class="dropdown-item" th:href="@{/instituicao/analise}">Aprovações</a></li>
+                        <li th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" ><a class="dropdown-item" th:href="@{/instituicao/analise}">Aprovações</a></li>
                     </ul>
                 </li>
             </ul>
