@@ -1,12 +1,12 @@
 package com.ondedoar.cotroller;
 
 import com.ondedoar.dto.InstituicaoRecordDto;
+import com.ondedoar.enums.InstituicaoStatus;
 import com.ondedoar.exception.ValidationUtils;
 import com.ondedoar.model.ImagemModel;
 import com.ondedoar.model.InstituicaoModel;
 import com.ondedoar.service.ImagemService;
 import com.ondedoar.service.InstituicaoService;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/instituicao")
@@ -33,23 +34,38 @@ public class InstituicaoController {
     ImagemService imagemService;
 
     @GetMapping("/create")
-    public String create() {
+    public String create(@RequestParam(value = "id", required = false) Integer id, Model model) {
+
+        if (id != null) {
+            InstituicaoModel instituicaoModel = instituicaoService.getById(id);
+            model.addAttribute("instituicao", instituicaoModel);
+            model.addAttribute("id", instituicaoModel.getId());
+        }
+
         return "instituicao/form";
     }
 
     @PostMapping("/create")
     public String createInstituicao(Model model, @ModelAttribute @Valid InstituicaoRecordDto instituicaoRecordDto, BindingResult bindingResult,
-                                    @RequestParam("imagens") List<MultipartFile> imagens) {
+                                    @RequestParam("imagens") List<MultipartFile> imagens, @RequestParam(value = "id", required = false) Integer id) {
 
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = ValidationUtils.getErrorMessages(bindingResult);
             model.addAttribute("errorMessage", errorMessages);
+            model.addAttribute("instituicao", instituicaoRecordDto);
             return "instituicao/form";
         }
 
         InstituicaoModel instituicaoModel = new InstituicaoModel();
-
         BeanUtils.copyProperties(instituicaoRecordDto, instituicaoModel);
+
+        if (id != null) {
+            InstituicaoModel instituicaoModelUpdate = instituicaoService.getById(id);
+            instituicaoModel.setId(instituicaoModelUpdate.getId());
+
+        }
+
+        instituicaoModel.setStatus(InstituicaoStatus.ANALISE);
         instituicaoService.save(instituicaoModel);
 
         for (MultipartFile imagem : imagens) {
@@ -57,9 +73,7 @@ public class InstituicaoController {
                 try {
 
                     String diretorioDestino = System.getProperty("user.dir") + "/src/main/resources/static/uploads";
-
                     String nomeArquivo = imagem.getOriginalFilename();
-
                     String caminhoCompleto = diretorioDestino + "/" + nomeArquivo;
 
                     byte[] bytes = imagem.getBytes();
@@ -80,57 +94,45 @@ public class InstituicaoController {
                 }
             }
         }
-        model.addAttribute("successMessage", "Instituição em processo de validação, aguarde aprovação!");
-
+        model.addAttribute("successMessage", "Instituição aguardando validação, aguarde aprovação!");
 
         return "instituicao/form";
     }
 
     @GetMapping()
-    public String getAllInstituicao(Model model) {
-
-        List<InstituicaoModel> instituicoes = instituicaoService.getAll();
-
+    public String getAllInstituicoesAtivas(Model model) {
+        List<InstituicaoModel> instituicoes = instituicaoService.getAllActives();
         model.addAttribute("instituicoes", instituicoes);
 
         return "instituicao/list";
     }
-    /*
 
-@GetMapping("/id/{id}")
-    public ResponseEntity<InstituicaoModel> getByIdInstituicao(@PathVariable(value = "id") int id) {
-        Optional<InstituicaoModel> instituicaoModel = instituicaoService.getById(id);
-        var instituicao = instituicaoModel.get();
-
-        if (instituicaoModel.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(instituicao);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(instituicao);
+    @GetMapping({"/delete/{id}"})
+    public String deleteInstituicao(@PathVariable Integer id, Model model) {
+        this.instituicaoService.delete(id);
+        model.addAttribute("successMessage", "Instituição excluída com sucesso!");
+        return "redirect:/instituicao";
     }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<InstituicaoModel>> getCategoriaInstituicao(@PathVariable(value = "category") InstituicaoCategoria categoria) {
+    @GetMapping("/analise")
+    public String getAllInstituicoesAnalise(Model model) {
+        List<InstituicaoModel> instituicoes = instituicaoService.getAllAnalizes();
+        model.addAttribute("instituicoes", instituicoes);
 
-        Optional<List<InstituicaoModel>> instituicoes = Optional.ofNullable(instituicaoService.getCategoria(categoria));
-        if (instituicoes.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(instituicaoService.getCategoria(categoria));
+        return "instituicao/analise";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<InstituicaoModel> updateInstituicao(@PathVariable(value = "id") int id, @RequestBody @Valid InstituicaoModel instituicaoModel) {
-        Optional<InstituicaoModel> instituicaoMod = instituicaoService.getById(id);
+    @PostMapping("/analise")
+    public String aprovarInstituicao(Model model, @RequestParam(value = "id", required = false) Integer id) {
 
-        if (instituicaoMod.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(instituicaoModel);
+        if(id != null) {
+            InstituicaoModel instituicaoModel = instituicaoService.getById(id);
+            instituicaoModel.setStatus(InstituicaoStatus.ATIVO);
+            instituicaoService.save(instituicaoModel);
+            model.addAttribute("successMessage", "Instituição ativada com sucesso!");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(instituicaoService.update(instituicaoModel));
+        return "redirect:/instituicao/analise";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteInstituicao(@PathVariable(value = "id") int id) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(instituicaoService.delete(id));
-    }*/
 }

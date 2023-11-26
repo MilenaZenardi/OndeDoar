@@ -13,6 +13,7 @@
 
 </head>
 <body>
+<div th:replace="~{index :: navigation}"></div>
 <!-- Exibe mensagens de erro ou sucesso, se houver -->
 <div th:if="${errorMessage}" class="alert alert-danger">
     <p th:text="${errorMessage}"></p>
@@ -32,27 +33,27 @@
                         <div class="mb-3 col-auto">
                             <!-- Usamos col-auto para que o elemento tome apenas o espaço necessário -->
                             <label class="form-label"  for="nome">Nome:</label>
-                            <input class="form-control" type="text" id="nome" name="nome" required><br><br>
+                            <input class="form-control" type="text" id="nome" name="nome" th:value="${user != null? user.nome : ''}" required><br><br>
                         </div>
 
                         <div class="mb-3 col">
                             <!-- O col sem especificação irá ocupar o espaço restante disponível -->
                             <label class="form-label"  for="cpf">CPF:</label>
-                            <input class="form-control" type="text" id="cpf" name="cpf" required><br><br>
+                            <input class="form-control" type="text" id="cpf" name="cpf" th:value="${user != null? user.cpf : ''}" required><br><br>
                         </div>
 
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label"  for="email">Email:</label>
-                        <input class="form-control" type="email" id="email" name="email" required><br><br>
+                        <input class="form-control" type="email" id="email" name="email" th:value="${user != null? user.email : ''}" required><br><br>
                     </div>
 
                     <div class="row">
                         <div class="mb-3 col-auto">
                             <!-- Usamos col-auto para que o elemento tome apenas o espaço necessário -->
                             <label class="form-label"  for="login">Login:</label>
-                            <input class="form-control" type="text" id="login" name="login" required><br><br>
+                            <input class="form-control" type="text" id="login" name="login" th:value="${user != null? user.login : ''}" required><br><br>
                         </div>
 
                         <div class="mb-3 col">

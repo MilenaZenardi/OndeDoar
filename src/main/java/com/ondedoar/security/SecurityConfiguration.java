@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +36,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/instituicao").permitAll()
                         .requestMatchers(HttpMethod.GET, "/instituicao/create").permitAll()
                         .requestMatchers(HttpMethod.POST, "/instituicao/create").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/instituicao/delete/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/index").permitAll()
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/css/**").permitAll()
@@ -55,4 +57,10 @@ public class SecurityConfiguration {
         //salvando o hash da senha do usuário no banco, e não a senha inteira
         return  new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public SpringSecurityDialect springSecurityDialect(){
+        return new SpringSecurityDialect();
+    }
+
 }

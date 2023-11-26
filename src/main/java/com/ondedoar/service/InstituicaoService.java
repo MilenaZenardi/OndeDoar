@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InstituicaoService {
@@ -17,27 +16,31 @@ public class InstituicaoService {
     InstituicaoRepository instituicaoRepository;
 
     public InstituicaoModel save(InstituicaoModel instituicaoModel) {
-        instituicaoModel.setStatus(InstituicaoStatus.ANALISE);
         return instituicaoRepository.save(instituicaoModel);
     }
 
-    public List<InstituicaoModel> getAll() {
-        return instituicaoRepository.findAll();
+    public List<InstituicaoModel> getAllActives() {
+        return instituicaoRepository.findAllActives();
     }
+
+    public List<InstituicaoModel> getAllAnalizes() {
+        return instituicaoRepository.findAllAnalyzes();
+    }
+
 
     public List<InstituicaoModel> getCategoria(InstituicaoCategoria categoria) {
         return instituicaoRepository.findByCategory(categoria);
     }
 
-    public Optional<InstituicaoModel> getById(int id) {
-        return instituicaoRepository.findById(id);
+    public InstituicaoModel getById(int id) {
+        InstituicaoModel instituicaoModel =  instituicaoRepository.getById(id);
+
+        return instituicaoModel;
     }
 
-    public InstituicaoModel update(InstituicaoModel instituicaoModel) {
-        return instituicaoRepository.save(instituicaoModel);
+    public void delete(Integer id) {
+        this.instituicaoRepository.deleteById(id);
     }
-    public String delete(int id) {
-            instituicaoRepository.deleteById(id);
-        return "Deletado com sucesso";
-    }
+
+
 }

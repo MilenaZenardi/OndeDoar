@@ -12,4 +12,10 @@ import java.util.List;
 public interface InstituicaoRepository extends JpaRepository<InstituicaoModel, Integer> {
     @Query("SELECT i FROM InstituicaoModel i WHERE i.categoria = :categoria")
     List<InstituicaoModel> findByCategory(InstituicaoCategoria categoria);
+
+    @Query("SELECT i FROM InstituicaoModel i WHERE i.status = 'ATIVO'")
+    List<InstituicaoModel> findAllActives();
+
+    @Query("SELECT i FROM InstituicaoModel i WHERE i.status = 'ANALISE'")
+    List<InstituicaoModel> findAllAnalyzes();
 }
