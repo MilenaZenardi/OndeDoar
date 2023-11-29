@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Menu</title>
-    <link rel="stylesheet"  th:href="@{/css/auth/index.css}" >
+    <link rel="stylesheet"  th:href="@{/css/index/index.css}" >
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
@@ -13,7 +13,7 @@
 <body>
 <nav th:fragment="navigation" class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <h1>Onde Doar</h1>
+        <h1 class="page-name">Onde Doar</h1>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -26,7 +26,7 @@
                     <a class="nav-link" href="/auth/login">Entrar</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/auth/create">Registrar-se</a>
+                    <a class="nav-link" href="/auth/create">Cadastre-se</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">

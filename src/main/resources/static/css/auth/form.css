@@ -84,3 +84,20 @@ button.btn:hover {
     background-color: rgba(0, 134, 134, 0.212);
     color: rgb(2, 31, 31);
 }
+
+.navbar {
+    height: 50px;
+    background-image: url('../../images/background.png');
+    background-size: cover;
+}
+.navbar-nav {
+    margin-left: auto;
+}
+
+.navbar-nav .nav-link {
+    margin-left: 20px;
+}
+.page-name{
+    font-size: 22px;
+    color: #39543c;
+}
