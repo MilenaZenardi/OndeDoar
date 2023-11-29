@@ -38,6 +38,7 @@ legend {
     border-radius: 20px;
     font-size: 14px;
     color: rgb(3, 80, 80);
+    font-size: 18px;
 }
 
 .form-control,
@@ -64,7 +65,7 @@ legend {
     color: rgba(71, 71, 71, 0.829);
 }
 #endereco{
-    width: 630px;
+    width: 600px;
 }
 
 #cep {
@@ -80,7 +81,7 @@ legend {
 }
 
 #razaoSocial {
-    width: 520px;
+    width: 500px;
 }
 
 button.btn {
